@@ -1,4 +1,6 @@
-import {cart} from '../data/cart.js'
+import {cart, addToCart} from '../data/cart.js';
+import { products } from '../data/products.js';
+// import { addToCart } from '../data/cart.js';
 let productsHtml = ''
 
 products.forEach((product)=>{
@@ -59,50 +61,37 @@ products.forEach((product)=>{
 
 document.querySelector('.js-product-grid').innerHTML = productsHtml;
 
+
+
+function updateCartQuantity(){
+    let cartQuantity = 0;
+    cart.forEach((item) => {
+        cartQuantity += item.quantity;
+    })
+    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+
+}
+
 document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
     button.addEventListener('click',() =>{
         const productId = button.dataset.productId;
         // to chose matching item
-        let matchingItem;
-        cart.forEach((item) => {
-            if(productId === item.productId){
-                matchingItem = item;
-            }
-        });
-        const selectQuantity = document.querySelector(`.js-quantity-selector-${productId}`);
-         if(matchingItem){
-            console.log(selectQuantity.value);
-            matchingItem.quantity += Number(selectQuantity.value);
-        }
-        
-        else{
-            console.log(selectQuantity.value);
-            cart.push({
-                productId:productId,
-                quantity:Number(selectQuantity.value)
-            });
-        }
-        
-        let cartQuantity = 0;
-        cart.forEach((item) => {
-            cartQuantity += item.quantity;
-        })
-
-        document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-
+        addToCart(productId);
+        updateCartQuantity();
+      
         const added = document.querySelector(`.js-added-to-cart-${productId}`);
         //added.style.opacity=1;
 
         added.classList.add('added-to-cart-ms');
 
-        clearTimeout(timeoutId);
+       
         let timeoutId = setTimeout(()=>{
             added.classList.remove('added-to-cart-ms');
-        },5000);
+        },2000);
         
        
 
-        console.log(typeof(selectQuantity.value));
+       
         // console.log(cartQuantity);
         // console.log(cart);
     });
